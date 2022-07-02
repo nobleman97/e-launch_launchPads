@@ -5,14 +5,14 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./softLaunchFactoryBase.sol";
-import "../../interfaces/IBNBsoftLaunch.sol";
+import "../../interfaces/IBUSDsoftLaunch.sol";
 
-contract BNBsoftLaunchFactory is softLaunchFactoryBase {
+contract BUSDsoftLaunchFactory is softLaunchFactoryBase {
   using Address for address payable;
   using SafeMath for uint256;
   using SafeERC20 for IERC20;
 
-    IBNBsoftLaunch.saleInfo compressedInfo;
+    IBUSDsoftLaunch.saleInfo compressedInfo;
 
     event presaleCreated(
     address indexed owner,
@@ -34,11 +34,11 @@ contract BNBsoftLaunchFactory is softLaunchFactoryBase {
     }
 
     function totalTokensNeeded(
-        uint _BNBFee,
+        uint _BUSDFee,
         uint _liquidityPercent,
         uint _totalTokensForSale
     )internal pure returns(uint _tokensNeeded_wei, uint tokensCharged){
-        require(_BNBFee == 2 || _BNBFee == 4, "BNBFee must either be 2 or 4");
+        require(_BUSDFee == 2 || _BUSDFee == 4, "_BUSDFee must either be 2 or 4");
 
         /**
         * @dev Doing all calculations in Wei
@@ -50,13 +50,13 @@ contract BNBsoftLaunchFactory is softLaunchFactoryBase {
          */
 
 
-        if(_BNBFee == 4){
+        if(_BUSDFee == 4){
             uint totalTokensForLiquidity = ((_totalTokensForSale * 96) * _liquidityPercent) * 1e14;
 
             uint tokensNeeded_wei = totalTokensForLiquidity + (_totalTokensForSale * 1e18);
 
             return (tokensNeeded_wei, 0);
-        }else if(_BNBFee == 2){
+        }else if(_BUSDFee == 2){
             uint totalTokensForLiquidity = ((_totalTokensForSale * 98) * _liquidityPercent) * 1e14;
 
             uint tokensNeeded_wei = totalTokensForLiquidity + (_totalTokensForSale * 1e18);
@@ -77,7 +77,7 @@ contract BNBsoftLaunchFactory is softLaunchFactoryBase {
         address tokenOnSale,
         uint softCap, //enter value in ether (e.g 1, 2, 16 etc), not wei
         uint liquidityPercent,
-        uint _BNBFee, // either 2 or 5
+        uint _BUSDFee, // either 2 or 5
         uint refundType, // "0" for refund, "1" for burn
         uint totalTokensForSale, // entered as normal value (ethers)
         uint liquidityReleaseDate,
@@ -89,7 +89,7 @@ contract BNBsoftLaunchFactory is softLaunchFactoryBase {
 
         (uint tokensNeeded_wei,
         uint tokensBill) = totalTokensNeeded(
-            _BNBFee,
+            _BUSDFee,
             liquidityPercent,
             totalTokensForSale
         );
@@ -100,7 +100,7 @@ contract BNBsoftLaunchFactory is softLaunchFactoryBase {
         compressedInfo.tokenOnSale = tokenOnSale;
         compressedInfo.softCap = softCap;
         compressedInfo.liquidityPercent = liquidityPercent;
-        compressedInfo._BNBFee = _BNBFee;
+        compressedInfo._BUSDFee = _BUSDFee;
         compressedInfo.refundType = refundType;
         compressedInfo.liquidityReleaseDate = liquidityReleaseDate;
         compressedInfo.minBuyPerUser = minBuyPerUser;
@@ -111,7 +111,7 @@ contract BNBsoftLaunchFactory is softLaunchFactoryBase {
         payable(feeTo).sendValue(flatFee);
         address presale = Clones.clone(implementation);
 
-        IBNBsoftLaunch(presale).initialize(
+        IBUSDsoftLaunch(presale).initialize(
             msg.sender,
             tokensNeeded_wei,
             compressedInfo,

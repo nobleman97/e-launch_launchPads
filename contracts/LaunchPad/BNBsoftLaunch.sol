@@ -434,9 +434,9 @@ contract BNBsoftLaunch is Ownable, Initializable {
         LPtokenReleaseDate += extraTime;
     }
 
-    function setDefaultLPTokenReleaseDate()external {
-       require(defaultReleaseDateSet == false, "Default release date already set" );
-       LPtokenReleaseDate = saleEndTime + 5 days;
-       defaultReleaseDateSet = true;
-    }
+    // function setDefaultLPTokenReleaseDate()external {
+    //    require(defaultReleaseDateSet == false, "Default release date already set" );
+    //    LPtokenReleaseDate = saleEndTime + 5 days;
+    //    defaultReleaseDateSet = true;
+    // }
 }

@@ -14,12 +14,12 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const FSN_Token = await hre.ethers.getContractFactory("testToken");
-  const _FSN_Token = await FSN_Token.deploy("Fusion Protocol", "FSN");
+  const _FusionStaking = await hre.ethers.getContractFactory("FusionStaking");
+  const _FusionStaking_ = await _FusionStaking.deploy('0x82282A97D0EF41e0631046273C187Eb7AE7742B9', '0x82282A97D0EF41e0631046273C187Eb7AE7742B9', '0xDBD06E7690F2c575129abD5552DaEB0055367305', '0xd8764B01dD3A77211a4437d1768F598Cb249E33B');
 
-  await _FSN_Token.deployed();
+  await _FusionStaking_.deployed();
 
-  console.log("_FSN_Token deployed to:", _FSN_Token.address);
+  console.log("_FusionStaking_ deployed to:", _FusionStaking_.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

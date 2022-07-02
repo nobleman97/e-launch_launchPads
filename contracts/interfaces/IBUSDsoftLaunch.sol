@@ -2,14 +2,14 @@
 pragma solidity >=0.8.0;
 
 
-interface IBNBsoftLaunch {
+interface IBUSDsoftLaunch {
      struct saleInfo{
         uint256 _saleStartTime;
         uint256 _saleEndTime;
         address tokenOnSale;
         uint softCap;
         uint liquidityPercent;
-        uint _BNBFee;
+        uint _BUSDFee;
         uint refundType; // "0" for refund, "1" for burn
         uint liquidityReleaseDate;
         uint minBuyPerUser;
