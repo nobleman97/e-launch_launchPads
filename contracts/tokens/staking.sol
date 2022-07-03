@@ -196,5 +196,7 @@ contract FusionStaking is Ownable{
         return pool[poolID].userStakedBalance[userAddress];
     }
 
-
+    function getLastStakeDate(uint poolID, address userAddress) public view returns (uint){
+        return pool[poolID].lastTimeUserStaked[userAddress];
+    }
 }
