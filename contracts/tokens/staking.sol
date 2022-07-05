@@ -30,12 +30,16 @@ contract FusionStaking is Ownable{
     uint poolIndex;
     uint[] public poolIndexArray;
 
+    uint public rewardIntervalInDays;
+
     constructor(address _stakingToken, address _rewardsToken, address administratorAddress, address _feeReceiver) {
         stakingToken = IERC20(_stakingToken);
         rewardsToken = IERC20(_rewardsToken);
         _transferOwnership(administratorAddress);
         feeReceiver = _feeReceiver;
         poolIndex = 0;
+
+        rewardIntervalInDays = 365 days;
     }
 
     function createPool(
@@ -100,13 +104,13 @@ contract FusionStaking is Ownable{
             uint userReward_inWei; //= userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e4) / 365 days); // reward period is yearly
 
             if(pool[poolID].APY > 0 && pool[poolID].APY <= 9){
-                userReward_inWei = userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e5) / 365 days);
+                userReward_inWei = userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e5) / rewardIntervalInDays);
             }
             else if(pool[poolID].APY >= 10 && pool[poolID].APY <= 99){
-                userReward_inWei = userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e4) / 365 days); // reward period is per 5 mins
+                userReward_inWei = userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e4) / rewardIntervalInDays);
             }
             else if(pool[poolID].APY >= 100 && pool[poolID].APY <= 999){
-                userReward_inWei = userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e3) / 365 days);
+                userReward_inWei = userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e3) / rewardIntervalInDays);
             }
 
             return userReward_inWei;
@@ -162,6 +166,10 @@ contract FusionStaking is Ownable{
             pool[_poolID].hasStaked[msg.sender] = false;
 
         }
+    }
+
+    function setRewardInterval(uint _interval) public onlyOwner {
+        rewardIntervalInDays = (_interval * 1 days);
     }
 
     function togglePausePool(uint _poolID) external onlyOwner{
