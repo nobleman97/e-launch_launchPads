@@ -250,4 +250,11 @@ contract FusionStaking is Ownable{
         return amountOfRewardsInContract;
     }
 
+    function setMinimumDeposit(uint _poolID, uint _minimumDepositInWei) public onlyOwner{
+        pool[_poolID].minimumDeposit = _minimumDepositInWei;
+    }
+
+    function getMinimumDeposit(uint _poolID) public view returns(uint _minimumDeposit){
+        return pool[_poolID].minimumDeposit;
+    }
 }
