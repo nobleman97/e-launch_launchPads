@@ -19,9 +19,9 @@ contract FusionStaking is Ownable{
         mapping(address => uint256) userStakedBalance;
         mapping(address => bool) hasStaked;
         mapping(address => uint) lastTimeUserStaked;
-        address[] stakers;
         bool stakingIsPaused;
         bool poolIsInitialized;
+        uint stakersCount;
     }
 
     address public feeReceiver; // address to send early unstaking fee
@@ -30,7 +30,15 @@ contract FusionStaking is Ownable{
     uint poolIndex;
     uint[] public poolIndexArray;
 
-    uint public rewardIntervalInDays;
+    uint public rewardIntervalInSeconds;
+
+    // EVENTS
+    event poolCreated(uint timeOfCreation, string poolName, uint poolID);
+    event userStaked(address stakeHolder, uint timeOfStake, uint amountStaked);
+    event rewardClaimed(address stakeHolder, uint timeOfClaim, uint amountUnstaked, uint rewardEarned);
+    event poolState(uint timeOfChange, bool isPoolPaused);
+    event messageEvent(string Reason);
+
 
     constructor(address _stakingToken, address _rewardsToken, address administratorAddress, address _feeReceiver) {
         stakingToken = IERC20(_stakingToken);
@@ -39,7 +47,7 @@ contract FusionStaking is Ownable{
         feeReceiver = _feeReceiver;
         poolIndex = 0;
 
-        rewardIntervalInDays = 365 days;
+        rewardIntervalInSeconds = 365 days;
     }
 
     function createPool(
@@ -58,6 +66,8 @@ contract FusionStaking is Ownable{
 
         poolIndexArray.push(poolIndex);
         poolIndex += 1;
+
+        emit poolCreated(block.timestamp, _poolName, (poolIndex - 1));
 
         return (poolIndex - 1);
     }
@@ -85,11 +95,12 @@ contract FusionStaking is Ownable{
 
         stakingToken.transferFrom(msg.sender, address(this), _amount);
 
-        pool[poolID].stakers.push(msg.sender);
+        pool[poolID].stakersCount += 1;
+
         pool[poolID].hasStaked[msg.sender] = true;
         pool[poolID].lastTimeUserStaked[msg.sender] = block.timestamp;
 
-
+        emit userStaked(msg.sender, block.timestamp, _amount);
     }
 
     function calculateUserRewards(address userAddress, uint poolID) public view returns(uint){
@@ -101,17 +112,7 @@ contract FusionStaking is Ownable{
             uint userStake_wei = pool[poolID].userStakedBalance[userAddress];
             uint userStake_notWei = userStake_wei / 1e6; //remove SIX zeroes.
 
-            uint userReward_inWei; //= userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e4) / 365 days); // reward period is yearly
-
-            if(pool[poolID].APY > 0 && pool[poolID].APY <= 9){
-                userReward_inWei = userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e5) / rewardIntervalInDays);
-            }
-            else if(pool[poolID].APY >= 10 && pool[poolID].APY <= 99){
-                userReward_inWei = userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e4) / rewardIntervalInDays);
-            }
-            else if(pool[poolID].APY >= 100 && pool[poolID].APY <= 999){
-                userReward_inWei = userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e3) / rewardIntervalInDays);
-            }
+            uint userReward_inWei = userStake_notWei * pool[poolID].APY * ((periodSpentStaking * 1e4) / rewardIntervalInSeconds);
 
             return userReward_inWei;
         }else{
@@ -149,11 +150,27 @@ contract FusionStaking is Ownable{
 
             pool[_poolID].totalStaked -= (claimerStakedBalance + twentyPercentFee_wei);
             pool[_poolID].hasStaked[msg.sender] = false;
+            pool[_poolID].stakersCount -= 1;
+
+            emit rewardClaimed(msg.sender, block.timestamp, claimerStakedBalance, 0);
 
         }else{
 
             uint reward = calculateUserRewards(msg.sender, _poolID);
             require(reward > 0, "Rewards is too small to be claimed");
+
+            // Ensure claimer does not claim other stakeHolder's tokens as rewards
+            uint amountOfTokenInContract = rewardsToken.balanceOf(address(this));
+            uint totalStakedTokens = getTotalStaked();
+            uint amountOfRewardsInContract = (amountOfTokenInContract - totalStakedTokens);
+
+            // if the contract token balance is less than what the person desrves,
+            // transfer what is left in the contract
+            if(amountOfRewardsInContract < reward){
+                reward = amountOfRewardsInContract;
+
+                emit messageEvent("Sorry there is no more reward left in this Contract");
+            }
 
             rewardsToken.transfer(msg.sender, reward);
 
@@ -164,18 +181,21 @@ contract FusionStaking is Ownable{
 
             pool[_poolID].totalStaked -= claimerStakedBalance;
             pool[_poolID].hasStaked[msg.sender] = false;
+            pool[_poolID].stakersCount -= 1;
 
+            emit rewardClaimed(msg.sender, block.timestamp, claimerStakedBalance, reward);
         }
+
     }
 
     function setRewardInterval(uint _interval) public onlyOwner {
-        rewardIntervalInDays = (_interval * 1 days);
+        rewardIntervalInSeconds = (_interval);
     }
 
     function togglePausePool(uint _poolID) external onlyOwner{
         pool[_poolID].stakingIsPaused = !pool[_poolID].stakingIsPaused;
 
-        getPoolState(_poolID);
+        emit poolState(block.timestamp, pool[_poolID].stakingIsPaused);
     }
 
     function getPoolState(uint _poolID) public view returns(bool _stakingIsPaused){
@@ -207,4 +227,27 @@ contract FusionStaking is Ownable{
     function getLastStakeDate(uint poolID, address userAddress) public view returns (uint){
         return pool[poolID].lastTimeUserStaked[userAddress];
     }
+
+    function getPoolStakeDuration(uint poolID) public view returns(uint){
+        return pool[poolID].stakingDuration;
+    }
+
+    function getTotalStakeHolderCount() public view returns(uint){
+        uint totalStakeHolderCount;
+
+        for (uint256 i = 0; i < poolIndexArray.length; i++) {
+            totalStakeHolderCount += pool[i].stakersCount;
+        }
+
+        return totalStakeHolderCount;
+    }
+
+    function getRewardLeftInContract() public view returns(uint rewardsAvailable){
+        uint amountOfTokenInContract = rewardsToken.balanceOf(address(this));
+        uint totalStakedTokens = getTotalStaked();
+        uint amountOfRewardsInContract = (amountOfTokenInContract - totalStakedTokens);
+
+        return amountOfRewardsInContract;
+    }
+
 }
