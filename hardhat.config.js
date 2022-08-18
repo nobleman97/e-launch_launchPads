@@ -27,7 +27,7 @@ module.exports = {
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    apiKey: bscScanApiKey
+    apiKey: etherScanApiKey //necessary for verification
   },
   defaultNetwork: "bsctestnet",
   networks: {
