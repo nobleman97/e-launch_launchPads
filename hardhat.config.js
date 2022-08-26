@@ -38,6 +38,13 @@ module.exports = {
       accounts: [privateKey]
     },
 
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/" + infuraProjectId,
+      chainId: 4,
+      gasPrice: 20000000000,
+      accounts: [privateKey]
+    },
+
     // ropsten: {
     //   url: "https://ropsten.infura.io/v3/" + infuraProjectId,
     //   chainId: 3,

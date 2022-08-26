@@ -75,7 +75,7 @@ contract BNBsoftLaunchFactory is softLaunchFactoryBase {
         uint256 _saleStartTime,
         uint256 _saleEndTime,
         address tokenOnSale,
-        uint softCap, //enter value in ether (e.g 1, 2, 16 etc), not wei
+        uint softCap, // in wei
         uint liquidityPercent,
         uint _BNBFee, // either 2 or 5
         uint refundType, // "0" for refund, "1" for burn

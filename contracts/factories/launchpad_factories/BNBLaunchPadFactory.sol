@@ -57,21 +57,21 @@ contract BNBLaunchPadFactory is LaunchpadFactoryBase {
 
 
         if(_BNBFee == 4){
-            uint totalTokenBeingSold_wei = (hardCap * presaleRate) * 10**18;
-            uint totalTokensForLiquidity_wei = ((hardCap * 96) * (listingRate * liquidityPercent)) * 10**14;
+            uint totalTokenBeingSold_wei = (hardCap * presaleRate);
+            uint totalTokensForLiquidity_wei = ((hardCap * 96) * (listingRate * liquidityPercent)) / 10000;
 
             uint totalTokensNeeded_wei = totalTokenBeingSold_wei + totalTokensForLiquidity_wei;
 
             return (totalTokensNeeded_wei, 0);
         }else if(_BNBFee == 2){
-           uint totalTokenBeingSold_wei = (hardCap * presaleRate) * 10**18;
-            uint totalTokensForLiquidity_wei = ((hardCap * 98) * (listingRate * liquidityPercent)) * 10**14;
+           uint totalTokenBeingSold_wei = (hardCap * presaleRate);
+            uint totalTokensForLiquidity_wei = ((hardCap * 98) * (listingRate * liquidityPercent)) / 10000;
 
             uint totalTokensNeeded_wei = totalTokenBeingSold_wei + totalTokensForLiquidity_wei;
 
             uint tokensFeeToCharge = (totalTokenBeingSold_wei * 15) / 1000;
 
-            totalTokensNeeded_wei = (1015 * (hardCap * presaleRate))*1e15 + totalTokensForLiquidity_wei;
+            totalTokensNeeded_wei = ((1015 * (hardCap * presaleRate)) / 1000) + totalTokensForLiquidity_wei;
 
             return (totalTokensNeeded_wei, tokensFeeToCharge);
         }
@@ -85,8 +85,8 @@ contract BNBLaunchPadFactory is LaunchpadFactoryBase {
         uint256 _minBuyPerUser, // in wei
         uint256 _maxBuyPerUser, // in wei
         address tokenOnSale,
-        uint hardCap, //enter value in ether (e.g 1, 2, 16 etc), not wei
-        uint softCap, //enter value in ether (e.g 1, 2, 16 etc), not wei
+        uint hardCap, // in wei
+        uint softCap, // in wei
         uint presaleRate,
         uint listingRate,
         uint liquidityPercent,

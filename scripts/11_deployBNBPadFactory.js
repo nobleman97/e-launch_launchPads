@@ -15,9 +15,9 @@ async function main() {
 
   // We get the contract to deploy
   const BNBLaunchPadFactory = await hre.ethers.getContractFactory("BNBLaunchPadFactory");
-  const _BNBLaunchPadFactory = await BNBLaunchPadFactory.deploy();
+  const _BNBLaunchPadFactory = await BNBLaunchPadFactory.deploy('0x61177276bb92b277ef968c38dc4f5b8560ec47aa');
 
-  await _BNBLaunchPad.deployed();
+  await _BNBLaunchPadFactory.deployed();
 
   console.log("_BNBLaunchPadFactory deployed to:", _BNBLaunchPadFactory.address);
 }

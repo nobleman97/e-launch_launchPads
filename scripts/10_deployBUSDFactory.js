@@ -15,7 +15,7 @@ async function main() {
 
   // We get the contract to deploy
   const BUSDLaunchPadFactory = await hre.ethers.getContractFactory("BUSDLaunchPadFactory");
-  const _BUSDLaunchPadFactory = await BUSDLaunchPadFactory.deploy('0x16C856366B221c00D021fb94BAA421806A1A7807');
+  const _BUSDLaunchPadFactory = await BUSDLaunchPadFactory.deploy('0x1e87035ec026aaa4e71a4735cc7835419f0c09e3');
 
   await _BUSDLaunchPadFactory.deployed();
 

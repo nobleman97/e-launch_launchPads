@@ -31,7 +31,7 @@ contract BNBsoftLaunch is Ownable, Initializable {
     //address internal constant BUSD_TESTNET = 0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee;
     // uint256 public hardCap; // Max cap in BUSD
     // uint256 public hardCap_wei; 
-    uint256 public softCap;  // Soft cap in BUSD
+
     uint256 public softCap_wei;
     uint256 public saleStartTime; // start sale time
     uint256 public saleEndTime; // end sale time
@@ -89,8 +89,8 @@ contract BNBsoftLaunch is Ownable, Initializable {
         address _ELaunch
     ) external initializer{
 
-        softCap = compressedInfo.softCap;
-        softCap_wei = softCap * 1e18; // converting to wei
+        softCap_wei = compressedInfo.softCap;
+    
         saleStartTime = compressedInfo._saleStartTime;
         saleEndTime = compressedInfo._saleEndTime;
         projectOwner = _owner_;

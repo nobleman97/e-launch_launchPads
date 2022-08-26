@@ -14,12 +14,12 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const _reflectionToken = await hre.ethers.getContractFactory("MyBuilding");
-  const _reflectionToken_ = await _reflectionToken.deploy();
+  const BUSDsoftLaunch = await hre.ethers.getContractFactory("BUSDsoftLaunch");
+  const _BUSDsoftLaunch = await BUSDsoftLaunch.deploy();
 
-  await _reflectionToken_.deployed();
+  await _BUSDsoftLaunch.deployed();
 
-  console.log("Building deployed to:", _reflectionToken_.address);
+  console.log("_BUSDsoftLaunch deployed to:", _BUSDsoftLaunch.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
@@ -29,4 +29,4 @@ main()
   .catch((error) => {
     console.error(error);
     process.exit(1);
-  });
+});
