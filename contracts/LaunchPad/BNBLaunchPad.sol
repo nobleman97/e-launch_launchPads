@@ -184,7 +184,7 @@ contract BNBLaunchPad is Ownable, Initializable {
     }
 
     function _amountOfTokens(uint _weiAmount) internal view returns(uint) {
-        return (_weiAmount * _presaleRate); //this will give the no. tokens per BUSD
+        return (_weiAmount * _presaleRate); //this will give the no. tokens per BNB
     }
 
     function buyTokens() public payable{
