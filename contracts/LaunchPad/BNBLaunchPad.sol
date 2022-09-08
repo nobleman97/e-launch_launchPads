@@ -64,6 +64,7 @@ contract BNBLaunchPad is Ownable, Initializable {
 
     mapping(address => uint256) public amountBoughtInBNB; //mapping the user purchase 
     mapping(address => bool) internal userHasBought;
+    mapping(address => bool) internal userClaimedTokens;
 
     //mapping to hold claimable balance for each user
     mapping(address => uint256) public claimableTokenBalance;
@@ -146,6 +147,17 @@ contract BNBLaunchPad is Ownable, Initializable {
         whitelist.push(_address);
     }
 
+    function addManyWhitelist(address[] memory _address) external onlyOwner {
+        uint i;
+
+        for (i = 0; i < _address.length; i++){
+            require(_address[i] != address(0), "Invalid address");
+            whitelist.push(_address[i]);
+        }
+        
+        
+    }
+
     
     // check the address in whitelist tier one
     function getWhitelist(address _address) public view returns (bool) {
@@ -183,6 +195,7 @@ contract BNBLaunchPad is Ownable, Initializable {
             totalBNBReceivedInAllTier + amount <= hardCap_wei,
             "buyTokens: purchase cannot exceed hardCap. Try Buying a smaller amount"
         );
+        require(msg.sender != projectOwner, "Presale owner cannot participate");
 
         if(saleState == buyType.whiteListOnly){
 
@@ -387,12 +400,18 @@ contract BNBLaunchPad is Ownable, Initializable {
     }
 
     function claimTokens() external {
-        require(presaleFinalized == true, "claimTokens: User cannot claim tokenss till sale is finalized");
         // Add boolean to ensure that liquidity pool has been created
+        require(presaleFinalized == true, "claimTokens: User cannot claim tokenss till sale is finalized");
+        // Ensure investors can claim only once
+        require(userClaimedTokens[msg.sender] == false, "User has already claimed");
+
+        
         uint claimableTokens = claimableTokenBalance[msg.sender];
         claimableTokenBalance[msg.sender] = 0;
 
         ERC20Interface.safeTransfer(msg.sender, claimableTokens);
+
+        userClaimedTokens[msg.sender] = true;
     }
 
     function withdrawContribution() public {
