@@ -65,6 +65,7 @@ contract BNBsoftLaunch is Ownable, Initializable {
 
     mapping(address => uint256) public amountBoughtInBNB; //mapping the user purchase 
     mapping(address => bool) internal userHasBought;
+    mapping(address => bool) internal userClaimedTokens;
 
     //mapping to hold claimable balance for each user
     mapping(address => uint256) public claimableTokenBalance;
@@ -398,11 +399,15 @@ contract BNBsoftLaunch is Ownable, Initializable {
         require(presaleFinalized == true, "claimTokens: User cannot claim tokenss till sale is finalized");
         // Add boolean to ensure that liquidity pool has been created
 
+        // Ensure investors can claim only once
+        require(userClaimedTokens[msg.sender] == false, "User has already claimed");
+
+
         uint claimableTokens = calculateClaimableTokens();
-
         claimableTokenBalance[msg.sender] = 0;
-
         ERC20Interface.safeTransfer(msg.sender, claimableTokens);
+
+        userClaimedTokens[msg.sender] = true;
     }
 
     function withdrawContribution() public {
