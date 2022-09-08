@@ -148,6 +148,17 @@ contract BUSDsoftLaunch is Ownable, Initializable {
         whitelist.push(_address);
     }
 
+    function addManyWhitelist(address[] memory _address) external onlyOwner {
+        uint i;
+
+        for (i = 0; i < _address.length; i++){
+            require(_address[i] != address(0), "Invalid address");
+            whitelist.push(_address[i]);
+        }
+        
+        
+    }
+
     
     // check the address in whitelist tier one
     function getWhitelist(address _address) public view returns (bool) {
