@@ -1,7 +1,7 @@
 const { InfuraProvider } = require("@ethersproject/providers");
 const hre = require("hardhat");
 
-const factoryAddress = '0xB3Ef27eCc72b8c027DB9e2CD81849fA4be567C86';
+const factoryAddress = '0xa2371DDc9C47c885FFC5A470F02bfaf60de3d7DB';
 
 async function handleApproval(){
     const tokenContract = await hre.ethers.getContractFactory("testToken");
@@ -10,36 +10,35 @@ async function handleApproval(){
         "0xb83448589263925e321977E0cE5B10835A81A6b5" // $TCC
     )
 
-    const theResult = await token.approve(factoryAddress, "2000000000000000000000")
+    const theResult = await token.approve(factoryAddress, "8000000000000000000000")
     console.log(theResult);
 }
 
 async function main() {
-    const myContract = await hre.ethers.getContractFactory("BNBLaunchPadFactory");
+    const myContract = await hre.ethers.getContractFactory("BNBsoftLaunchFactory");
 
     const contract = await myContract.attach(
         factoryAddress
     )
 
-    const theResponse = await contract.setFlatFee('2000000000000');
+    //const theResponse = await contract.setFlatFee('2000000000000');
 
-        console.log(theResponse);
+        // console.log(theResponse);
 
     await handleApproval();
 
     const ourResponse = await contract.create(
-        1660916101,
-        1660919701,
-        '1000000000000000000',
-        '2000000000000000000',
+        1663851494,
+        1663852634,
         '0xb83448589263925e321977E0cE5B10835A81A6b5',
-        '200000000000000000',
-        '100000000000000000',
-        100,
-        100,
-        60,
+        '50000000000000000',
+        56,
         2,
-        1,
+        0,
+        4000,
+        1660919701,
+        '2000000000000000',
+        '100000000000000000',
         {value: ethers.utils.parseUnits("0.05"),
         gasLimit: 900000}
     );
@@ -55,28 +54,56 @@ const { infuraProjectId } = require('../secrets.json');
 
 async function checkFunc(){
 
-    const network = await ethers.providers.getNetwork(4);
-
-    const provider =  hre.ethers.getDefaultProvider(network, infuraProjectId)
+    // const network = await ethers.providers.getNetwork(97);
+    // const provider =  hre.ethers.getDefaultProvider(network, infuraProjectId)
     
 
-    const myContract = await hre.ethers.getContractFactory("Privacy");
+    const myContract = await hre.ethers.getContractFactory("BNBsoftLaunch");
 
     const contract = await myContract.attach(
-        '0xCE172FE7FD8a2FEE9fb4D7a9b1Fa553b14A51805'
+        "0x24efe8f4e762ea20fB2D152b598FC835a8763Bf8"
     )
 
-    let ourAnswer = await provider.getStorageAt('0xCE172FE7FD8a2FEE9fb4D7a9b1Fa553b14A51805', 5)
+    // let ourAnswer = await contract.buyTokens(
+    //     {value: '90000000000000000',
+    //     gasLimit: 900000});
 
-    // console.log(ourAnswer);
+    let ourAnswer = await contract.finalize();
 
-    // ourAnswer = ourAnswer.slice(0, 34);
+    console.log(ourAnswer);
+}
 
-    // console.log(ourAnswer);
+async function investigate(){
+    const myContract = await hre.ethers.getContractFactory("BNBsoftLaunch");
 
-    // await contract.unlock(ourAnswer);
+    const contract = await myContract.attach(
+        "0xf8eb527dfb3ea480ee0ef286446a48ceac56dcf8"
+    )
 
-    // console.log(" Contract lock state has been change to: ", await contract.locked());
+    console.log("David's FairLaunch")
+
+    const softCap = await contract.softCap_wei()
+    console.log(`the softcap is: ${softCap.toString()}` )
+
+    const totalContribution = await contract.totalBNBReceivedInAllTier()
+    console.log(`the totalContribution is: ${totalContribution.toString()}` )
+
+    const presalRate = await contract._presaleRate()
+    console.log(`the presalRate is: ${presalRate.toString()}` )
+
+    const _listingRate = await contract._listingRate()
+    console.log(`the _listingRate is: ${_listingRate.toString()}` )
+
+    const _liquidityPercent = await contract._liquidityPercent()
+    console.log(`the _liquidityPercent is: ${_liquidityPercent.toString()}` )
+
+    const BNBFee_ = await contract.BNBFee_()
+    console.log(`the BNBFee_ is: ${BNBFee_.toString()}` )
+
+    const totalTokensBeingSold = await contract.totalTokensBeingSold()
+    console.log(`the totalTokensBeingSold is: ${totalTokensBeingSold.toString()}` )
+
+    
 }
 
 checkFunc()

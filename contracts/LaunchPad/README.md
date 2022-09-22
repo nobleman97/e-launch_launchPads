@@ -4,8 +4,8 @@
 ## Factories
     - BNB LaunchPad factory: 0x5F59bb6BdA0e64B0A453317B75F6749C0A988D0a
     - BUSD LaunchPad factory: 0xB3Ef27eCc72b8c027DB9e2CD81849fA4be567C86
-    - BNB softLaunch factory: 
-    - BUSD softLaunch factory: 
+    - BNB softLaunch factory: 0xa2371DDc9C47c885FFC5A470F02bfaf60de3d7DB
+    - BUSD softLaunch factory: 0x81B1559D208518AA36382E325738BDB21c104669
 
 
 ## Implementations (8/9/2022):
