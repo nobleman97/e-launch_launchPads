@@ -37,7 +37,7 @@ contract BUSDsoftLaunch is Ownable, Initializable {
     uint256 public saleEndTime; // end sale time
     uint256 public totalBUSDReceivedInAllTier; // total BUSD received (in wei)
     uint256 public totalparticipants; // total participants in ido
-    //uint256 public totalTokensBought; // (in wei)
+    uint256 public totalTokensBought; // (in wei)
     uint256 public totalTokensForFairLaunch_wei;
     uint256 public totalTokensBeingSold;
     uint256 public LPtokenReleaseDate;

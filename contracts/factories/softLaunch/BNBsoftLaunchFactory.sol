@@ -56,16 +56,15 @@ contract BNBsoftLaunchFactory is softLaunchFactoryBase {
             uint tokensNeeded_wei = totalTokensForLiquidity + (_totalTokensForSale * 1e18);
 
             return (tokensNeeded_wei, 0);
+
         }else if(_BNBFee == 2){
             uint totalTokensForLiquidity = ((_totalTokensForSale * 98) * _liquidityPercent) * 1e14;
 
-            uint tokensNeeded_wei = totalTokensForLiquidity + (_totalTokensForSale * 1e18);
+            uint tokenFee = (_totalTokensForSale * 15) * 1e15;
 
-            uint tokensCharge_wei = (tokensNeeded_wei * 15) / 1000;
+            uint tokensNeeded_wei = ((1015 * _totalTokensForSale) * 1e15) + totalTokensForLiquidity;
 
-            tokensNeeded_wei = tokensNeeded_wei + tokensCharge_wei;
-
-            return (tokensNeeded_wei, tokensCharge_wei);
+            return (tokensNeeded_wei, tokenFee);
         }
     }
 
@@ -88,7 +87,7 @@ contract BNBsoftLaunchFactory is softLaunchFactoryBase {
         refundExcessiveFee();
 
         (uint tokensNeeded_wei,
-        uint tokensBill) = totalTokensNeeded(
+        uint tokenFee) = totalTokensNeeded(
             _BNBFee,
             liquidityPercent,
             totalTokensForSale
@@ -115,7 +114,7 @@ contract BNBsoftLaunchFactory is softLaunchFactoryBase {
             msg.sender,
             tokensNeeded_wei,
             compressedInfo,
-            tokensBill,
+            tokenFee,
             feeTo
         );
 

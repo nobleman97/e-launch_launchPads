@@ -16,9 +16,9 @@ import "../interfaces/IUniswapV2Router02.sol";
 import "../interfaces/IUniswapV2Factory.sol";
 import "../interfaces/IBNBsoftLaunch.sol";
 
-interface IERC20Extra is IERC20{
-    function _burn(address account, uint256 amount) external;
-}
+// interface IERC20Extra is IERC20{
+//     function _burn(address account, uint256 amount) external;
+// }
 
 
 //SeedifyFundsContract
@@ -242,7 +242,7 @@ contract BNBsoftLaunch is Ownable, Initializable {
                 "buyTokens:You are investing more than your tier-1 limit!"
             );
 
-            // increase amount of total BUSD received
+            // increase amount of total BNB received
             totalBNBReceivedInAllTier += amount;
 
             // // Get amount of tokens user can get for money paid
@@ -297,9 +297,8 @@ contract BNBsoftLaunch is Ownable, Initializable {
             // remove all extra zeros from the "totalBNBReceivedInAllTier"
             // before using it for computing
             uint totalTokensBeingSold_notWei = (totalTokensBeingSold * 1e18) / 1e6;
-            uint totalTokensForLiquidity_wei = ((totalTokensBeingSold_notWei * 985) * _liquidityPercent) * 1e1; // send 98.5% and leave 1.5% for Elaunch
-
-            // find the total amount of BUSD required to send Liquidity to PancakeSwap
+            uint totalTokensForLiquidity_wei = ((totalTokensBeingSold_notWei * 98) * _liquidityPercent) * 1e2;
+            // find the total amount of BNB required to send Liquidity to PancakeSwap
             uint totalBNBReceivedInAllTier_notWei = totalBNBReceivedInAllTier / 1e6;
             uint totalBNBforLiquidity_wei = (totalBNBReceivedInAllTier_notWei * _liquidityPercent * 98) * 1e2;
 
@@ -319,7 +318,9 @@ contract BNBsoftLaunch is Ownable, Initializable {
             ERC20Interface.transfer(projectOwner, unsoldTokens);
         }else if(_refundType == 1){
             // 1 = burn
-            IERC20Extra(tokenAddress)._burn(address(this), unsoldTokens);
+            // IERC20Extra(tokenAddress)._burn(address(this), unsoldTokens);
+
+            IERC20(tokenAddress).transfer(0x000000000000000000000000000000000000dEaD, unsoldTokens);
         }
 
     }
@@ -424,7 +425,7 @@ contract BNBsoftLaunch is Ownable, Initializable {
     //     saleEndTime = block.timestamp + 10;
     // }
 
-    function checkBalancesOfContract() public view returns(uint contractBUSDBalance, uint contractTokenBalance) {
+    function checkBalancesOfContract() public view returns(uint contractBNBBalance, uint contractTokenBalance) {
         // for BNB
         uint _contractBNBBalance = address(this).balance;
         // for the token
