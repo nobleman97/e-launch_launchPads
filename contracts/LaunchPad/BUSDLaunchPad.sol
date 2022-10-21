@@ -329,7 +329,7 @@ contract BUSDLaunchPad is Ownable, Initializable {
             ERC20Interface.transfer(projectOwner, unsoldTokens);
         }else if(_refundType == 1){
             // 1 = burn
-            IERC20Extra(tokenAddress)._burn(address(this), unsoldTokens);
+           IERC20(tokenAddress).transfer(0x000000000000000000000000000000000000dEaD, unsoldTokens);
         }
 
     }

@@ -112,19 +112,19 @@ async function investigate(){
 }
 
 async function changeImplementation(){
-    const myContract = await hre.ethers.getContractFactory("BUSDsoftLaunchFactory");
+    const myContract = await hre.ethers.getContractFactory("BNBsoftLaunchFactory");
 
     const contract = await myContract.attach(
-        "0x81B1559D208518AA36382E325738BDB21c104669"
+        "0xB38b5957C6FE6aDAF74C94Cd16EB9D538bbd6f8F"
     )
 
-    const response = await contract.setImplementation('0x5610561CC9D5E87Edb9d7Fcb71140Da4796BDAB7')
+    const response = await contract.setImplementation('0x50ca75A5b0DA0F8C79336e267b018e84f3b4b2D5')
     // const response = await contract.implementation();
 
     console.log(response)
 }
 
-main()
+changeImplementation()
     .then(() => process.exit(0))
     .catch((error) => {
         console.error(error);
