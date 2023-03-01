@@ -4,6 +4,7 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 /**
  * - Receive tokens
  * - Update records
@@ -18,13 +19,18 @@ contract RavenPay is Ownable {
     string Name;
     IERC20 public userTokens;
     address treasuryWallet;
+    uint testValue;
 
     // Mappings
-    mapping (address => uint256) public userBalance;
+    mapping (address => mapping (uint256 => uint256)) public transactionPerTime;
 
     // Events
     event depositMade(uint time, address sender, address receiver, uint amount);
-    event withdrawalMade(uint time, address receiver, uint amount);
+    // event withdrawalMade(uint time, address receiver, uint amount);
+    // event balanceReduced(address _user_, uint amount);
+    // event balanceIncreased(address _user_,  uint amount);
+    event inAppTransfer(address from, address to, uint amount);
+    event  txDetails(address indexed _sender, uint _amountSent, string  RefString);
 
     // Constructor
     constructor(
@@ -41,43 +47,78 @@ contract RavenPay is Ownable {
     }
 
     // Function
+    fallback() external payable{
+        revert();
+    }
+
+    receive() external payable{
+        revert();
+    }
 
 
     // "Approve" a reasonable amount of USDT before calling this function
-    function receiveFunds( uint256 amount) public {
+    function receiveFunds( uint256 amount, string memory _refString) public returns(string memory sucessMessage) {
         require(amount > 0, "amount must be greater than zero");
 
         userTokens.transferFrom(msg.sender, treasuryWallet, amount);
-        userBalance[msg.sender] += amount;
+        transactionPerTime[msg.sender][block.timestamp] += amount;
 
-        emit depositMade(block.timestamp, msg.sender, treasuryWallet, amount);
+        
+        emit txDetails(msg.sender, amount, _refString);
+        return("success"); 
     }
 
-    // "Approve" a reasonable amount of USDT for this contract before
-    function withdrawFunds ( uint256 amount, address userWallet ) public onlyOwner {
-        require ( amount > 0, "amount must be greater than zero");
-        require(userBalance[userWallet] >= amount, "User's Balance is lower than requested amount");
-        // uint treasuryBalance = userTokens.balanceOf(treasuryWallet);
+    // "Approve" a laaaaaaaaaaaarge amount of USDT for this contract to spend on behalf of Treasury Wallet
+    // function withdrawFunds ( uint256 amount) public returns(string memory sucessMessage){
+    //     require ( amount > 0, "amount must be greater than zero");
+    //     require(userBalance[msg.sender] >= amount, "User's Balance is lower than requested amount");
+    //     require(userTokens.balanceOf(treasuryWallet) >= amount, "Not enough funds in our treasuryWallet. Please contact support");
 
-        userBalance[userWallet] -= amount;
-        userTokens.transferFrom(treasuryWallet, userWallet, amount);
 
-        emit withdrawalMade(block.timestamp, userWallet, amount);        
-    }
+    //     userBalance[msg.sender] -= amount;
+    //     userTokens.transferFrom(treasuryWallet, msg.sender, amount);
 
-    function reduceUserBalance (address _user, uint _amount) public onlyOwner{
-        // this function should be called when user spends money from his in-app wallet
-        require ( _amount > 0, "amount must be greater than zero");
+    //     emit withdrawalMade(block.timestamp, msg.sender, amount);   
+    //     return("success");     
+    // }
 
-        userBalance[_user] -= _amount;        
-    }
 
-    function getBalanceByAddress(address user) public view returns (uint256) {
-        return userTokens.balanceOf(user);
+    // function spendBalance(uint _expenditure) public returns(string memory sucessMessage) {
+    //     // this function should be called when user wants to spend money from his in-app wallet
+    //     require(userBalance[msg.sender] >= _expenditure, "User cannot spend more than wallet balance");
+    //     require ( _expenditure > 0, "amount must be greater than zero");
+
+    //     userBalance[msg.sender] -= _expenditure;
+
+    //     emit balanceReduced(msg.sender, _expenditure);
+    //     return("success");
+    // }
+
+    // function transferToOtherUser(address toAddress, uint _amount_) public returns(string memory sucessMessage) {
+    //     // call this when one user wants to transfer to another in-app
+    //     require(userBalance[msg.sender] >= _amount_, "User cannot spend more than wallet balance");
+    //     require ( _amount_ > 0, "amount must be greater than zero");
+
+    //     userBalance[msg.sender] -= _amount_;
+    //     userBalance[toAddress] += _amount_;
+
+    //     emit inAppTransfer(msg.sender, toAddress, _amount_);
+    //     return("success");
+    // }
+
+    function getBalanceByAddress(address _user, uint256 _timestamp) public view returns(uint256) {
+        return transactionPerTime[_user][_timestamp];
     }
 
     function getContractBalance() public view returns (uint256) {
         return userTokens.balanceOf(address(this));
+    }
+
+    function removeTokensFromContract (address _token) external onlyOwner {
+        // to salvage any tokens that may be stuck in smart contract
+        uint contractBalance = IERC20(_token).balanceOf(address(this));
+
+        IERC20(_token).transfer(treasuryWallet, contractBalance);
     }
 
     function setTreasury (address _treasuryAddress) external onlyOwner{
@@ -85,5 +126,17 @@ contract RavenPay is Ownable {
     }
 
 
+    function setUserTokens (address _tokenAddress) public onlyOwner {
+        userTokens = IERC20(_tokenAddress);
+    }
+
+
+    function incrementValue () public {
+        testValue = testValue + 1;
+    }
+
+    function getValue () public view returns (uint) {
+        return testValue;
+    }
 
 }

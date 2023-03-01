@@ -124,7 +124,7 @@ async function changeImplementation(){
     console.log(response)
 }
 
-changeImplementation()
+main()
     .then(() => process.exit(0))
     .catch((error) => {
         console.error(error);

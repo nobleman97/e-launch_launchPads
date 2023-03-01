@@ -14,12 +14,12 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const BNBLaunchPadFactory = await hre.ethers.getContractFactory("BNBsoftLaunchFactory");
-  const _BNBLaunchPadFactory = await BNBLaunchPadFactory.deploy('0xA42cc96669Bf72A2F02d684722B33d2aEAb3D4e0');
+  const BNBLaunchPadFactory = await hre.ethers.getContractFactory("BNBLaunchPadFactory");
+  const _BNBLaunchPadFactory = await BNBLaunchPadFactory.deploy('0x48A2088B15eE04e8B8ad002e71096eEdd15E1d34');
 
   await _BNBLaunchPadFactory.deployed();
 
-  console.log("_BNBsoftLaunchFactory deployed to:", _BNBLaunchPadFactory.address);
+  console.log("_BNBLaunchFactory deployed to:", _BNBLaunchPadFactory.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

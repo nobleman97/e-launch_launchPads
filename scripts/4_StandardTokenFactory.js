@@ -15,7 +15,7 @@ async function main() {
 
   // We get the contract to deploy
   const StandardTokenFactory = await hre.ethers.getContractFactory("StandardTokenFactory");
-  const _standardTokenFactory = await StandardTokenFactory.deploy("0xe4fa27bBb1C0Be0E686231254FF0c3437329d89B", "0x1A9e40Fb76aA44d4aE9575E4738B1d3E443D7C05");
+  const _standardTokenFactory = await StandardTokenFactory.deploy("0x3E045e02ae753E673f4416b1bBe5C0F7f3f73342", "");
 
   await _standardTokenFactory.deployed();
 

@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require('@nomiclabs/hardhat-ethers');
 require("@nomiclabs/hardhat-etherscan")
+require("@nomiclabs/hardhat-web3");
 const { mnemonic, privateKey, bscScanApiKey, etherScanApiKey, infuraProjectId } = require('./secrets.json');
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -11,6 +12,10 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   for (const account of accounts) {
     console.log(account.address);
   }
+});
+
+task("accounts", "Prints accounts", async (_, { web3 }) => {
+  console.log(await web3.eth.getAccounts());
 });
 
 // You need to export an object to set up your config
