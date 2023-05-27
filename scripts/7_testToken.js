@@ -14,12 +14,12 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const EVF_Token = await hre.ethers.getContractFactory("testToken");
-  const _EVF_Token = await EVF_Token.deploy("EverFork", "EVF");
+  const TAX_Token = await hre.ethers.getContractFactory("taxToken");
+  const _TAX_Token = await TAX_Token.deploy("taxToken", "TAX", 2, 4, "0xbFf63dC906650a28257D5aeD1d8d1F82684C814f");
 
-  await _EVF_Token.deployed();
+  await _TAX_Token.deployed();
 
-  console.log("_EVF_Token deployed to:", _EVF_Token.address);
+  console.log("_TAX_Token deployed to:", _TAX_Token.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -39,7 +39,8 @@ module.exports = {
     mainnet: {
       url: "https://bsc-dataseed1.binance.org/",
       chainId: 56,
-      accounts: [privateKey]},
+      accounts: [privateKey]
+    },
 
     bsctestnet: {
       url: "https://data-seed-prebsc-2-s1.binance.org:8545",
@@ -53,6 +54,13 @@ module.exports = {
       gasPrice: 20000000000,
       accounts: [privateKey]
     },
+
+    goerli: {
+      url: "https://goerli.infura.io/v3/" + infuraProjectId,
+      chainId: 5,
+      gasPrice: 20000000000,
+      accounts: [privateKey]
+    }
 
     // ropsten: {
     //   url: "https://ropsten.infura.io/v3/" + infuraProjectId,
