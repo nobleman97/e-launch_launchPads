@@ -32,11 +32,15 @@ module.exports = {
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    apiKey: etherScanApiKey //necessary for verification
+    apiKey: bscScanApiKey //necessary for verification
   },
   defaultNetwork: "bsctestnet",
   networks: {
-   
+    mainnet: {
+      url: "https://bsc-dataseed1.binance.org/",
+      chainId: 56,
+      accounts: [privateKey]},
+
     bsctestnet: {
       url: "https://data-seed-prebsc-2-s1.binance.org:8545",
       chainId: 97,
@@ -61,7 +65,7 @@ module.exports = {
   },
     
 solidity: {
-  version: "0.8.7",
+  version: "0.8.18",
   settings: {
     optimizer: {
       runs:200,
