@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require('@nomiclabs/hardhat-ethers');
-require("@nomiclabs/hardhat-etherscan")
+require("@nomiclabs/hardhat-etherscan");
+// require("@nomicfoundation/hardhat-verify");
 require("@nomiclabs/hardhat-web3");
 const { mnemonic, privateKey, bscScanApiKey, etherScanApiKey, infuraProjectId } = require('./secrets.json');
 
@@ -32,18 +33,25 @@ module.exports = {
   etherscan: {
     // Your API key for Etherscan
     // Obtain one at https://etherscan.io/
-    apiKey: bscScanApiKey //necessary for verification
+    // apiKey: bscScanApiKey //necessary for verification
+    apiKey: etherScanApiKey
   },
   defaultNetwork: "bsctestnet",
   networks: {
-    mainnet: {
+    bsc_mainnet: {
       url: "https://bsc-dataseed1.binance.org/",
       chainId: 56,
       accounts: [privateKey]
     },
 
+    eth_mainnet: {
+      url: "https://mainnet.infura.io/v3/" + infuraProjectId,
+      chainId: 1,
+      accounts: [privateKey]
+    },
+
     bsctestnet: {
-      url: "https://data-seed-prebsc-2-s1.binance.org:8545",
+      url: "https://data-seed-prebsc-2-s3.binance.org:8545",
       chainId: 97,
       accounts: [privateKey]
     },
@@ -58,6 +66,13 @@ module.exports = {
     goerli: {
       url: "https://goerli.infura.io/v3/" + infuraProjectId,
       chainId: 5,
+      gasPrice: 20000000000,
+      accounts: [privateKey]
+    },
+
+    sepolia: {
+      url: "https://sepolia.infura.io/v3/" + infuraProjectId,
+      chainId: 11155111,
       gasPrice: 20000000000,
       accounts: [privateKey]
     }
